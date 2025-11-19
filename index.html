@@ -499,8 +499,15 @@
     </div>
 
     <script>
-        let goals = [];
-        let visionItems = [];
+        // Load data from storage
+        let goals = JSON.parse(localStorage.getItem('goals')) || [];
+        let visionItems = JSON.parse(localStorage.getItem('visionItems')) || [];
+
+        // Save data to storage
+        function saveData() {
+            localStorage.setItem('goals', JSON.stringify(goals));
+            localStorage.setItem('visionItems', JSON.stringify(visionItems));
+        }
 
         function showSection(sectionId, e) {
             if (e) e.preventDefault();
@@ -539,12 +546,13 @@
             };
 
             goals.push(goal);
+            saveData();
             
             event.target.reset();
             document.getElementById('progressLabel').textContent = '0%';
             
             alert('Goal added successfully! 🎉');
-            showSection('dashboard');
+            showSection('dashboard', null);
         }
 
         function renderGoals() {
@@ -583,6 +591,7 @@
         function deleteGoal(id) {
             if (confirm('Are you sure you want to delete this goal?')) {
                 goals = goals.filter(g => g.id !== id);
+                saveData();
                 renderGoals();
                 updateStats();
             }
@@ -607,6 +616,7 @@
                 content: text
             });
 
+            saveData();
             document.getElementById('visionText').value = '';
             renderVisionBoard();
         }
@@ -637,6 +647,7 @@
 
         function deleteVisionItem(id) {
             visionItems = visionItems.filter(i => i.id !== id);
+            saveData();
             renderVisionBoard();
         }
 
